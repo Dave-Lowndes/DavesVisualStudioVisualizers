@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <windows.h>
+#include <propkey.h>
 
 class MyClass
 {
@@ -19,24 +20,41 @@ public:
     }
 };
 
+
 int wmain(int argc, WCHAR* argv[])
 {
-    FILETIME creationTime;
-    HANDLE hFile = CreateFile(argv[0], GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, nullptr, OPEN_EXISTING, 0, nullptr);
-    if (hFile == INVALID_HANDLE_VALUE)
-        return -1;
+	FILETIME ft;
+	SYSTEMTIME st;
 
-    if (!GetFileTime(hFile, &creationTime, nullptr, nullptr))
-        return -1;
+	// BREAK HERE TO SEE THE INVALID REPRESENTATION OF FILETIME & SYSTEMTIME
+	st.wYear = 2016;
+	st.wMonth = 6;
+	st.wDay = 16;
+	st.wHour = 13;
+	st.wMinute = 14;
+	st.wSecond = 15;
+	st.wMilliseconds = 0;
 
-    FILETIME* pPointerTest1 = &creationTime;
-    FILETIME* pPointerTest2 = nullptr;
-    MyClass c(creationTime, 12);
+	SystemTimeToFileTime( &st, &ft );
+
+	// Now get the local time
+	SYSTEMTIME lst;
+	SystemTimeToTzSpecificLocalTime( nullptr, &st, &lst );
+	FILETIME lft;
+	SystemTimeToFileTime( &lst, &lft );
+
+	PROPERTYKEY key;
+
+	// BREAK HERE TO SEE THE INVALID REPRESENTATION OF PROPERTYKEY
+	key = PKEY_ApplicationName;
+
+	MyClass myC(ft, 12);
 
     FILETIME FTZero = {};
 
-    __debugbreak(); // program will stop here. Evaluate 'creationTime' and 'pPointerTest' in the locals or watch window.
+    __debugbreak(); // program will stop here. Evaluate 'myC', key, st, ft, lst in the debugtip, locals or watch windows.
     std::cout << "Test complete\n";
 
     return 0;
 }
+

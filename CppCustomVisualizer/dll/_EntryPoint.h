@@ -70,7 +70,6 @@ public:
         );
 
 private:
-    static HRESULT FileTimeToText(const FILETIME& fileTime, CString& text);
 };
 
 OBJECT_ENTRY_AUTO(CCppCustomVisualizerService::ClassId, CCppCustomVisualizerService)

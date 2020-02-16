@@ -5,6 +5,19 @@
 
 #include "stdafx.h"
 #include "_EntryPoint.h"
+#include "FileAndSystemTimeViz.h"
+#include "PropertyKeyViz.h"
+
+#define INITGUID
+#include <initguid.h>
+// {34A6191C-7D6D-4B36-9C3F-A4D051289DEB}
+DEFINE_GUID( FILETIME_VIZ_ID, 0x34a6191c, 0x7d6d, 0x4b36, 0x9c, 0x3f, 0xa4, 0xd0, 0x51, 0x28, 0x9d, 0xeb );
+
+// {1AC4A977-2954-4316-8CE6-A6251EEBA144}
+DEFINE_GUID( SYSTEMTIME_VIZ_ID, 0x1ac4a977, 0x2954, 0x4316, 0x8c, 0xe6, 0xa6, 0x25, 0x1e, 0xeb, 0xa1, 0x44 );
+
+// {47D01893-3FA1-4326-9ED2-5236246CF231}
+DEFINE_GUID( PROPKEY_VIZ_ID, 0x47d01893, 0x3fa1, 0x4326, 0x9e, 0xd2, 0x52, 0x36, 0x24, 0x6c, 0xf2, 0x31 );
 
 HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpression(
     _In_ Evaluation::DkmVisualizedExpression* pVisualizedExpression,
@@ -32,22 +45,56 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
         return E_NOTIMPL;
     }
 
-    // Read the FILETIME value from the target process
     DkmProcess* pTargetProcess = pVisualizedExpression->RuntimeInstance()->Process();
-    FILETIME value;
-    hr = pTargetProcess->ReadMemory(pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof(value), nullptr);
-    if (FAILED(hr))
-    {
-        // If the bytes of the value cannot be read from the target process, just fall back to the default visualization
-        return E_NOTIMPL;
-    }
-
-    // Format this FILETIME as a string
     CString strValue;
-    hr = FileTimeToText(value, /*ref*/strValue);
-    if (FAILED(hr))
+
+    auto vizId = pVisualizedExpression->VisualizerId();
+
+    if ( vizId == FILETIME_VIZ_ID )
     {
-        strValue = "<Invalid Value>";
+        // Read the FILETIME value from the target process
+        FILETIME value;
+        hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
+        if ( FAILED( hr ) )
+        {
+            // If the bytes of the value cannot be read from the target process, just fall back to the default visualization
+            return E_NOTIMPL;
+        }
+
+        // Format this FILETIME as a string
+        strValue = FileTimeToText( value, pRootVisualizedExpression->InspectionContext()->Radix() );
+    }
+    else if ( vizId == SYSTEMTIME_VIZ_ID )
+    {
+        SYSTEMTIME value;
+        hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
+        if ( FAILED( hr ) )
+        {
+            // If the bytes of the value cannot be read from the target process, just fall back to the default visualization
+            return E_NOTIMPL;
+        }
+
+        // Format as a string
+        strValue = FormatSystemTime( value );
+    }
+    else if ( vizId == PROPKEY_VIZ_ID )
+    {
+        // Read the PROPERTYKEY value from the target process
+        PROPERTYKEY value;
+        hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
+        if ( FAILED( hr ) )
+        {
+            // If the bytes of the value cannot be read from the target process, just fall back to the default visualization
+            return E_NOTIMPL;
+        }
+
+        // Format as a string
+        strValue = GetKeyName( value );
+    }
+    else
+    {
+        // Don't know what it's for
+        return E_NOTIMPL;
     }
 
     CString strEditableValue;
@@ -285,96 +332,3 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::GetUnderlyingString(
     return E_NOTIMPL;
 }
 
-HRESULT CCppCustomVisualizerService::FileTimeToText(const FILETIME& fileTime, CString& text)
-{
-    text.Empty();
-
-    SYSTEMTIME systemTime;
-    if (!FileTimeToSystemTime(&fileTime, &systemTime))
-    {
-        return WIN32_LAST_ERROR();
-    }
-
-    int cch;
-
-    // Deterime how much to allocate for the date
-    cch = GetDateFormatW(
-        GetThreadLocale(),
-        DATE_SHORTDATE,
-        &systemTime,
-        nullptr,
-        nullptr,
-        0
-        );
-    if (cch == 0)
-    {
-        return WIN32_LAST_ERROR();
-    }
-
-    int allocLength = cch
-        - 1 // To convert from a character count (including null terminator) to a length
-        + 1; // For the space (' ') character between the date and time
-
-    // Deterime how much to allocate for the time
-    cch = GetTimeFormatW(
-        GetThreadLocale(),
-        /*flags*/0,
-        &systemTime,
-        nullptr,
-        nullptr,
-        0
-        );
-    if (cch == 0)
-    {
-        return WIN32_LAST_ERROR();
-    }
-
-    allocLength += (cch - 1); // '-1' is to convert from a character count (including null terminator) to a length
-    CString result;
-    LPWSTR pBuffer = result.GetBuffer(allocLength);
-
-    // Add the date
-    cch = GetDateFormatW(
-        GetThreadLocale(),
-        DATE_SHORTDATE,
-        &systemTime,
-        nullptr,
-        pBuffer,
-        allocLength+1
-        );
-    if (cch == 0)
-    {
-        return WIN32_LAST_ERROR();
-    }
-
-    pBuffer += (cch-1); // '-1' is to convert from a character count (including null terminator) to a length
-    int remainaingLength = allocLength - (cch-1);
-
-    // Add a space between the date and the time
-    if (remainaingLength <= 1)
-    {
-        return HRESULT_FROM_WIN32(ERROR_INSUFFICIENT_BUFFER);
-    }
-    *pBuffer = ' ';
-    pBuffer++;
-    remainaingLength--;
-
-    // Add the time
-    cch = GetTimeFormatW(
-        GetThreadLocale(),
-        /*flags*/0,
-        &systemTime,
-        nullptr,
-        pBuffer,
-        remainaingLength + 1 // '+1' is for null terminator
-        );
-    if (cch == 0)
-    {
-        return WIN32_LAST_ERROR();
-    }
-
-    result.ReleaseBuffer();
-    text = result;
-
-    return S_OK;
-}

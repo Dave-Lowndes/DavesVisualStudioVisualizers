@@ -31,6 +31,12 @@
     <ClCompile Include="_EntryPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FileAndSystemTimeViz.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PropertyKeyViz.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="CppCustomVisualizer.def">
@@ -68,6 +74,12 @@
       <Filter>Concord API %28for reference%29</Filter>
     </ClInclude>
     <ClInclude Include="_EntryPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileAndSystemTimeViz.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PropertyKeyViz.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

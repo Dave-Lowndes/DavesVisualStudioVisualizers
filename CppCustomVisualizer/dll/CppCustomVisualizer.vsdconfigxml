@@ -33,9 +33,14 @@ For more information about this file, see https://github.com/Microsoft/ConcordEx
 
       <Implements>
         <InterfaceGroup>
+          <!--NOTE: These VisualizerId(s) are also used in the .natvis file.-->
           <Filter>
-            <!--NOTE: This VisualizerId is also used in the .natvis file.-->
-            <VisualizerId RequiredValue="8E723FD7-611E-40E7-98C0-624D8873F559"/>
+            <!--FILETIME-->
+            <VisualizerId RequiredValue="34A6191C-7D6D-4B36-9C3F-A4D051289DEB"/>
+            <!--SYSTEMTIME-->
+            <VisualizerId RequiredValue="1AC4A977-2954-4316-8CE6-A6251EEBA144"/>
+            <!--PROPERTYKEY-->
+            <VisualizerId RequiredValue="47D01893-3FA1-4326-9ED2-5236246CF231"/>
           </Filter>
           <Interface Name="IDkmCustomVisualizer"/>
         </InterfaceGroup>
