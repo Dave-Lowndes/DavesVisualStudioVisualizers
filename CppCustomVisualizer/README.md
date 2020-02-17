@@ -6,7 +6,7 @@ This ia an enhanced version of the [Microsoft Concord Extensibility Sample](http
 •	PROPERTYKEY  
 
 
-![Demonstration animation](/demo.gif)
+![Demonstration animation](/CppCustomVisualizer/demo.gif)
 
 ### Original project on which this is based
 More information be found in the [Wiki for this project](https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Cpp-Custom-Visualizer-Sample).
