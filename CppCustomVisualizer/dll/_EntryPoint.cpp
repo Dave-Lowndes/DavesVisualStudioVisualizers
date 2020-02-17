@@ -76,6 +76,12 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
 
         // Format as a string
         strValue = FormatSystemTime( value );
+
+        // An empty returned string indicates an invalid SYSTEMTIME
+        if ( strValue.IsEmpty() )
+        {
+            strValue = _T( "Invalid" );
+        }
     }
     else if ( vizId == PROPKEY_VIZ_ID )
     {
