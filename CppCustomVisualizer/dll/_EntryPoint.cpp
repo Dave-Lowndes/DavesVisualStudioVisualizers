@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) David Lowndes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 // _CppCustomVisualizerService.cpp : Implementation of CCppCustomVisualizerService
@@ -294,11 +294,11 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::UseDefaultEvaluationBehav
 }
 
 HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::GetChildren(
-    _In_ Evaluation::DkmVisualizedExpression* pVisualizedExpression,
-    _In_ UINT32 InitialRequestSize,
-    _In_ Evaluation::DkmInspectionContext* pInspectionContext,
-    _Out_ DkmArray<Evaluation::DkmChildVisualizedExpression*>* pInitialChildren,
-    _Deref_out_ Evaluation::DkmEvaluationResultEnumContext** ppEnumContext
+    _In_ Evaluation::DkmVisualizedExpression* /*pVisualizedExpression*/,
+    _In_ UINT32 /*InitialRequestSize*/,
+    _In_ Evaluation::DkmInspectionContext* /*pInspectionContext*/,
+    _Out_ DkmArray<Evaluation::DkmChildVisualizedExpression*>* /*pInitialChildren*/,
+    _Deref_out_ Evaluation::DkmEvaluationResultEnumContext** /*ppEnumContext*/
     )
 {
     // This sample delegates expansion to the C++ EE, so this method doesn't need to be implemented
@@ -306,11 +306,11 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::GetChildren(
 }
 
 HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::GetItems(
-    _In_ Evaluation::DkmVisualizedExpression* pVisualizedExpression,
-    _In_ Evaluation::DkmEvaluationResultEnumContext* pEnumContext,
-    _In_ UINT32 StartIndex,
-    _In_ UINT32 Count,
-    _Out_ DkmArray<Evaluation::DkmChildVisualizedExpression*>* pItems
+    _In_ Evaluation::DkmVisualizedExpression* /*pVisualizedExpression*/,
+    _In_ Evaluation::DkmEvaluationResultEnumContext* /*pEnumContext*/,
+    _In_ UINT32 /*StartIndex*/,
+    _In_ UINT32 /*Count*/,
+    _Out_ DkmArray<Evaluation::DkmChildVisualizedExpression*>* /*pItems*/
     )
 {
     // This sample delegates expansion to the C++ EE, so this method doesn't need to be implemented
@@ -318,10 +318,10 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::GetItems(
 }
 
 HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::SetValueAsString(
-    _In_ Evaluation::DkmVisualizedExpression* pVisualizedExpression,
-    _In_ DkmString* pValue,
-    _In_ UINT32 Timeout,
-    _Deref_out_opt_ DkmString** ppErrorText
+    _In_ Evaluation::DkmVisualizedExpression* /*pVisualizedExpression*/,
+    _In_ DkmString* /*pValue*/,
+    _In_ UINT32 /*Timeout*/,
+    _Deref_out_opt_ DkmString** /*ppErrorText*/
     )
 {
     // This sample delegates setting values to the C++ EE, so this method doesn't need to be implemented
@@ -329,8 +329,8 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::SetValueAsString(
 }
 
 HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::GetUnderlyingString(
-    _In_ Evaluation::DkmVisualizedExpression* pVisualizedExpression,
-    _Deref_out_opt_ DkmString** ppStringValue
+    _In_ Evaluation::DkmVisualizedExpression* /*pVisualizedExpression*/,
+    _Deref_out_opt_ DkmString** /*ppStringValue*/
     )
 {
     // FILETIME doesn't have an underlying string (no DkmEvaluationResultFlags::RawString), so this method

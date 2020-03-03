@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) David Lowndes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #pragma once
@@ -6,7 +6,7 @@
 // This file defines the CCppCustomVisualizerService class, which is the one and only
 // COM object exported from the sample dll.
 
-#include "CppCustomVisualizer.Contract.h"
+#include "DavesCustomVisualizer.Contract.h"
 
 class ATL_NO_VTABLE CCppCustomVisualizerService :
     // Inherit from CCppCustomVisualizerServiceContract to provide the list of interfaces that

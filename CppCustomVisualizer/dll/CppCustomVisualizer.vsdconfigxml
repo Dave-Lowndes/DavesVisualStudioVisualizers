@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (c) Microsoft. All rights reserved.
+Copyright (c) David Lowndes. All rights reserved.
 Licensed under the MIT license. See LICENSE file in the project root for full license information.
 -->
 
@@ -8,7 +8,7 @@ Licensed under the MIT license. See LICENSE file in the project root for full li
 This file is used to describe the CppCustomVisualizer component. This file is run through 
 vsdconfigtool.exe as part of the build, which generates two other files:
 
-* CppCustomVisualizer.Contract.h contains a C++ class header, and ensures that the code and 
+* DavesCustomVisualizer.Contract.h contains a C++ class header, and ensures that the code and 
 configuration stay in sync.
 
 * CppCustomVisualizer.vsdconfig is a binary version of this file which is deployed along with 
@@ -26,7 +26,7 @@ For more information about this file, see https://github.com/Microsoft/ConcordEx
   <NativeComponent
     ComponentId="{184B8704-E76C-454A-991F-351D9AB15CFC}"
     ComponentLevel="9991500"
-    ModuleName="CppCustomVisualizer.dll">
+    ModuleName="DavesCustomVisualizer.dll">
     <!--NOTE: For more information on ComponentLevel, see https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Component-Levels -->
 
     <Class Name="CCppCustomVisualizerService" ClassId="{9535F50E-1738-4AE2-8507-5207C44B8261}" WorkerProcessSupported="true">
