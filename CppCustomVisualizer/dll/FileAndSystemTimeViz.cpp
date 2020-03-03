@@ -1,3 +1,6 @@
+// Copyright (c) David Lowndes. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 #include "stdafx.h"
 #include "FileAndSystemTimeViz.h"
 
@@ -70,11 +73,11 @@ CString FileTimeToText( const FILETIME& ftUtc, UINT nBase )
             diffInMins += tzi.Bias;
             LPCWSTR ZoneName = diffInMins != 0 ? tzi.DaylightName : tzi.StandardName;
 
-            text.Format( _T( "[utc] %s [%ls] %s" ), strUtc, ZoneName, strLoc );
+			text.Format( _T( "[utc] %s [%ls] %s" ), static_cast<LPCTSTR>(strUtc), ZoneName, static_cast<LPCTSTR>(strLoc) );
         }
         else
         {
-            text.Format( _T( "utc: %s ???" ), strUtc );
+            text.Format( _T( "utc: %s ???" ), static_cast<LPCTSTR>(strUtc) );
         }
     }
     else
