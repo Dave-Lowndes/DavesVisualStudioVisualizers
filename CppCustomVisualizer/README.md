@@ -17,7 +17,7 @@ Variables of these types are normally displayed in the debugger in raw number fo
 ### Original project on which this is based
 The original CppCustomVisualizer only handles the FILETIME type, and only shows a local format of it.
 
-More information be found in the [Wiki for that project](https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Cpp-Custom-Visualizer-Sample).
+More information can be found in the [Wiki for that project](https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Cpp-Custom-Visualizer-Sample).
 
 Natvis documentation can be found on [docs.microsoft.com](https://docs.microsoft.com/en-us/visualstudio/debugger/create-custom-views-of-native-objects).
 
