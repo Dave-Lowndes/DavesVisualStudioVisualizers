@@ -26,3 +26,5 @@ Microsoft.VisualStudio.Glass
 /Iris/Programs/*.dll
 /Iris/Programs/*.exe
 /Iris/Programs/*.pdb
+/CppCustomVisualizer/SignVSIX.bat
+/CppCustomVisualizer/dll/CppCustomVisualizer.aps

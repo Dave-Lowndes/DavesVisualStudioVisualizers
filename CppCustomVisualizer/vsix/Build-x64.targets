@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
-Copyright (c) Microsoft. All rights reserved.
+Copyright (c) David Lowndes. All rights reserved.
 Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 This file defines targets to build the solution for x64 as part of the x86 build. This is important
@@ -14,7 +14,7 @@ because the .vsix contains both an x86 and x64 implementation.
     -->
     <BuildX64Verbosity>normal</BuildX64Verbosity>
     
-    <ChildMSBuildCommandLineStart>"$(MSBuildBinPath)\msbuild.exe" /nologo /m ..\CppCustomVisualizer.sln /p:Configuration=$(Configuration) /p:Platform=x64 /v:$(BuildX64Verbosity)</ChildMSBuildCommandLineStart>
+    <ChildMSBuildCommandLineStart>"$(MSBuildBinPath)\msbuild.exe" /nologo /m ..\DavesCustomVisualizer.sln /p:Configuration=$(Configuration) /p:Platform=x64 /v:$(BuildX64Verbosity)</ChildMSBuildCommandLineStart>
     <!-- The following line passes DevEnvDir to the x64 build if it is defined.
          The trailing slashes here are necessary to escape the original trailing slash in the definition of these directories.
          Without this trailing slash, the quote would get escaped and would be forwarded through the build incorrectly.-->

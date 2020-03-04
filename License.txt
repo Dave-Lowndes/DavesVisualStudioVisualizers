@@ -1,6 +1,6 @@
-Visual Studio Debug Engine Extensibility Samples
+Enhanced version of Visual Studio Debug Engine Extensibility Samples
 
-Copyright (c) Microsoft Corporation
+Copyright (c) David Lowndes
 
 All rights reserved. 
 
