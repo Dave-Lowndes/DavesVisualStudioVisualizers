@@ -1,7 +1,7 @@
-// Copyright (c) Microsoft. All rights reserved.
+// Copyright (c) David Lowndes. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-// TargetApp.cpp : Example application which will be debuggeed
+// TargetApp.cpp : Example application which will be debugged
 
 #include <iostream>
 #include <windows.h>

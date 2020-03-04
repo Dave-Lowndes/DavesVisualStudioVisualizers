@@ -1,9 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="8F12C6F5-BE35-4DDD-B452-44811F0A3A4D" Version="1.0" Language="en-US" Publisher="Sample" />
-    <DisplayName>CppCustomVisualizer Debugger Sample</DisplayName>
-    <Description xml:space="preserve">CppCustomVisualizer Debugger Sample</Description>
+    <Identity Id="B9711ED2-638F-4D99-9E69-F9D0DB51C1F9" Version="1.0" Language="en-US" Publisher="David Lowndes" />
+    <DisplayName>Dave's Custom Visualizers</DisplayName>
+    <Description xml:space="preserve">Win32 Debug Visualizers</Description>
+    <MoreInfo>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer</MoreInfo>
+    <ReleaseNotes>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer</ReleaseNotes>
+    <Tags>FILETIME;SYSTEMTIME;PROPERTYKEY</Tags>
+    <Version>1.0</Version>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0, 17.0)" />
@@ -12,7 +16,7 @@
     <Prerequisite Id="Microsoft.VisualStudio.Debugger" Version="[15.0,)" DisplayName="Visual Studio Debugger" />
   </Prerequisites>
   <Assets>
-    <Asset Type="DebuggerEngineExtension" Path="CppCustomVisualizer.vsdconfig" d:Source="File" />
-    <Asset Type="NativeVisualizer" Path="CppCustomVisualizer.natvis"  />
+    <Asset Type="DebuggerEngineExtension" Path="DavesCustomVisualizer.vsdconfig" d:Source="File" />
+    <Asset Type="NativeVisualizer" Path="DavesCustomVisualizer.natvis"  />
   </Assets>
 </PackageManifest>
