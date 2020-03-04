@@ -10,12 +10,12 @@
 class MyClass
 {
     const FILETIME m_fileTime;
-    const int m_anotherField;
+	const PROPERTYKEY m_key;
 
 public:
-    MyClass(const FILETIME& ft, int anotherField) :
+    MyClass(const FILETIME& ft, const PROPERTYKEY & key) :
         m_fileTime(ft),
-        m_anotherField(anotherField)
+        m_key(key)
     {
     }
 };
@@ -48,7 +48,7 @@ int wmain(int argc, WCHAR* argv[])
 	// BREAK HERE TO SEE THE INVALID REPRESENTATION OF PROPERTYKEY
 	key = PKEY_ApplicationName;
 
-	MyClass myC(ft, 12);
+	MyClass myC(ft, key);
 
     FILETIME FTZero = {};
 
