@@ -22,7 +22,7 @@ because the .vsix contains both an x86 and x64 implementation.
   </PropertyGroup>
 
   <Target Name="Build-x64" BeforeTargets="ZipItems">
-    <!--Unfortunately we can't use the 'MSBuild' task here but must instead spawn a new instance of msbuild. The problem is that the 'MSBuild' task will stil
+    <!--Unfortunately we can't use the 'MSBuild' task here but must instead spawn a new instance of msbuild. The problem is that the 'MSBuild' task will still
     inherit some aspects of the current solution configuration, and when it is resolving project to project references will reference the output from the
     wrong configuration-->
     <Error Condition="'$(_BuildActionType)'==''" Text="'_BuildActionType' is not defined."/>

@@ -7,9 +7,13 @@
 #include "_EntryPoint.h"
 #include "FileAndSystemTimeViz.h"
 #include "PropertyKeyViz.h"
+//#include <ctime>
+#include <ATLComTime.h>
 
 #define INITGUID
 #include <initguid.h>
+
+// These GUID values are referenced in the .natvis file where the're associated with the named type
 // {34A6191C-7D6D-4B36-9C3F-A4D051289DEB}
 DEFINE_GUID( FILETIME_VIZ_ID, 0x34a6191c, 0x7d6d, 0x4b36, 0x9c, 0x3f, 0xa4, 0xd0, 0x51, 0x28, 0x9d, 0xeb );
 
@@ -19,6 +23,13 @@ DEFINE_GUID( SYSTEMTIME_VIZ_ID, 0x1ac4a977, 0x2954, 0x4316, 0x8c, 0xe6, 0xa6, 0x
 // {47D01893-3FA1-4326-9ED2-5236246CF231}
 DEFINE_GUID( PROPKEY_VIZ_ID, 0x47d01893, 0x3fa1, 0x4326, 0x9e, 0xd2, 0x52, 0x36, 0x24, 0x6c, 0xf2, 0x31 );
 
+// {C7B69925-4654-434D-A657-631AAB40BB82}
+//DEFINE_GUID( TIME_T_VIZ_ID, 0xc7b69925, 0x4654, 0x434d, 0xa6, 0x57, 0x63, 0x1a, 0xab, 0x40, 0xbb, 0x82 );
+
+// {C27383FF-1889-4959-A0E4-99DB41295CB3}
+DEFINE_GUID( COleDateTime_VIZ_ID,
+    0xc27383ff, 0x1889, 0x4959, 0xa0, 0xe4, 0x99, 0xdb, 0x41, 0x29, 0x5c, 0xb3 );
+
 HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpression(
     _In_ Evaluation::DkmVisualizedExpression* pVisualizedExpression,
     _Deref_out_opt_ Evaluation::DkmEvaluationResult** ppResultObject
@@ -26,7 +37,7 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
 {
     HRESULT hr;
 
-    // This method is called to visualize a FILETIME variable. Its basic job is to create
+    // This method is called to visualize one of the variable types this extension handles. Its basic job is to create
     // a DkmEvaluationResult object. A DkmEvaluationResult is the data that backs a row in the
     // watch window -- a name, value, and type, a flag indicating if the item can be expanded, and
     // lots of other additional properties.
@@ -34,7 +45,7 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
     Evaluation::DkmPointerValueHome* pPointerValueHome = Evaluation::DkmPointerValueHome::TryCast(pVisualizedExpression->ValueHome());
     if (pPointerValueHome == nullptr)
     {
-        // This sample only handles visualizing in-memory FILETIME structures
+        // This sample only handles visualizing in-memory structures
         return E_NOTIMPL;
     }
 
@@ -48,7 +59,7 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
     DkmProcess* pTargetProcess = pVisualizedExpression->RuntimeInstance()->Process();
     CString strValue;
 
-    auto vizId = pVisualizedExpression->VisualizerId();
+    const auto & vizId = pVisualizedExpression->VisualizerId();
 
     if ( vizId == FILETIME_VIZ_ID )
     {
@@ -74,8 +85,12 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
             return E_NOTIMPL;
         }
 
-        // Format as a string
-        strValue = FormatSystemTime( value );
+        // Convert to FILETIME (UTC) to pass to the string conversion that shows both UTC & local
+        FILETIME ft;
+        if ( SystemTimeToFileTime( &value, &ft ) )
+        {
+            strValue = FileTimeToText( ft, pRootVisualizedExpression->InspectionContext()->Radix() );
+        }
 
         // An empty returned string indicates an invalid SYSTEMTIME
         if ( strValue.IsEmpty() )
@@ -97,6 +112,58 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
         // Format as a string
         strValue = GetKeyName( value );
     }
+#if 0 //Ineffective, no unique struct definition
+    else if ( vizId == TIME_T_VIZ_ID)
+    {
+        // Read the time_t value from the target process
+        time_t value;
+        hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
+        if ( FAILED( hr ) )
+        {
+            // If the bytes of the value cannot be read from the target process, just fall back to the default visualization
+            return E_NOTIMPL;
+        }
+
+        // Format as a string
+        {
+            tm tmm;
+            gmtime_s( &tmm, &value );
+            char buffer[100];
+            asctime_s( buffer, &tmm );
+            strValue = buffer;
+        }
+    }
+#endif
+    else if ( vizId == COleDateTime_VIZ_ID )
+    {
+        /*ATL::*/COleDateTime value;
+
+        hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
+        if ( FAILED( hr ) )
+        {
+            // If the bytes of the value cannot be read from the target process, just fall back to the default visualization
+            return E_NOTIMPL;
+        }
+
+        // Convert -> SYSTEMTIME -> FILETIME in order to use the FILETIME string output function
+        SYSTEMTIME st;
+        if ( value.GetAsSystemTime( st ) )
+        {
+            // Convert to FILETIME (UTC) to pass to the string conversion that shows both UTC & local
+            FILETIME ft;
+            if ( SystemTimeToFileTime( &st, &ft ) )
+            {
+                strValue = FileTimeToText( ft, pRootVisualizedExpression->InspectionContext()->Radix() );
+            }
+        }
+
+        // An empty returned string indicates an invalid SYSTEMTIME
+        if ( strValue.IsEmpty() )
+        {
+            // Note: If the COleDateTime is invalid, this returns appropriate text
+            strValue = value.Format();
+        }
+    }
     else
     {
         // Don't know what it's for
@@ -105,8 +172,10 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
 
     CString strEditableValue;
 
+    auto pType = pRootVisualizedExpression->Type();
+
     // If we are formatting a pointer, we want to also show the address of the pointer
-    if (pRootVisualizedExpression->Type() != nullptr && wcschr(pRootVisualizedExpression->Type()->Value(), '*') != nullptr)
+    if ( ( pType != nullptr ) && ( wcschr( pType->Value(), '*') != nullptr ) )
     {
         // Make the editable value just the pointer string
         UINT64 address = pPointerValueHome->Address();
@@ -278,11 +347,11 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::UseDefaultEvaluationBehav
 
     CComPtr<DkmEvaluationResult> pEEEvaluationResult;
     hr = pVisualizedExpression->EvaluateExpressionCallback(
-        pInspectionContext,
-        pLanguageExpression,
-        pVisualizedExpression->StackFrame(),
-        &pEEEvaluationResult
-        );
+                                    pInspectionContext,
+                                    pLanguageExpression,
+                                    pVisualizedExpression->StackFrame(),
+                                    &pEEEvaluationResult
+                                    );
     if (FAILED(hr))
     {
         return hr;

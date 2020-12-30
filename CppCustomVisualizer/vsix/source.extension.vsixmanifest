@@ -6,8 +6,8 @@
     <Description xml:space="preserve">Win32 Debug Visualizers</Description>
     <MoreInfo>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer</MoreInfo>
     <ReleaseNotes>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer</ReleaseNotes>
-    <Tags>FILETIME;SYSTEMTIME;PROPERTYKEY</Tags>
-    <Version>1.0</Version>
+    <Tags>FILETIME;SYSTEMTIME;PROPERTYKEY;COleDateTime</Tags>
+    <Version>2.0</Version>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0, 17.0)" />

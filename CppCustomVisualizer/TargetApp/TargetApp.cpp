@@ -6,6 +6,9 @@
 #include <iostream>
 #include <windows.h>
 #include <propkey.h>
+#include <tchar.h>
+#include <ATLComTime.h>
+//#include <ctime>
 
 class MyClass
 {
@@ -20,9 +23,21 @@ public:
     }
 };
 
+//#include <atlbase.h>
+//#include <atlsecurity.h>
 
 int wmain(int argc, WCHAR* argv[])
 {
+//	LOGFONT lf;
+
+	COleDateTime dt{COleDateTime::GetCurrentTime()};
+	// Create one in summer time
+	COleDateTime dtSummer( dt.GetYear(), 6, 16, 1, 2, 3 );
+	// Another in winter time
+	COleDateTime dtWinter(dt.GetYear(), 12, 25, 4, 5, 6);
+
+	CString str = dt.Format();
+
 	FILETIME ft;
 	SYSTEMTIME st;
 
@@ -52,6 +67,10 @@ int wmain(int argc, WCHAR* argv[])
 
     FILETIME FTZero = {};
 
+#if 0	//Ineffective, no unique struct definition
+	time_t tim;
+	time( &tim );
+#endif
     __debugbreak(); // program will stop here. Evaluate 'myC', key, st, ft, lst in the debugtip, locals or watch windows.
     std::cout << "Test complete\n";
 

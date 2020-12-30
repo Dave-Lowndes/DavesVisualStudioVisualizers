@@ -20,7 +20,7 @@ For more information about this file, see https://github.com/Microsoft/ConcordEx
 <Configuration xmlns="http://schemas.microsoft.com/vstudio/vsdconfig/2008">
 
   <!--TODO: If you copy the sample, ensure to regenerate the GUIDs in this file. This
-  can be done with the 'Create GUID' tool ('Tools->Create GUID' in Visual Sudio or 
+  can be done with the 'Create GUID' tool ('Tools->Create GUID' in Visual Studio or 
   guidgen.exe from the command line). -->
 
   <NativeComponent
@@ -35,12 +35,17 @@ For more information about this file, see https://github.com/Microsoft/ConcordEx
         <InterfaceGroup>
           <!--NOTE: These VisualizerId(s) are also used in the .natvis file.-->
           <Filter>
+            <!--COleDateTime-->
+            <VisualizerId RequiredValue="C27383FF-1889-4959-A0E4-99DB41295CB3"/>
             <!--FILETIME-->
             <VisualizerId RequiredValue="34A6191C-7D6D-4B36-9C3F-A4D051289DEB"/>
             <!--SYSTEMTIME-->
             <VisualizerId RequiredValue="1AC4A977-2954-4316-8CE6-A6251EEBA144"/>
             <!--PROPERTYKEY-->
             <VisualizerId RequiredValue="47D01893-3FA1-4326-9ED2-5236246CF231"/>
+            <!--time_t Ineffective, no unique struct definition
+            <VisualizerId RequiredValue="C7B69925-4654-434D-A657-631AAB40BB82"/>
+	    -->
           </Filter>
           <Interface Name="IDkmCustomVisualizer"/>
         </InterfaceGroup>
