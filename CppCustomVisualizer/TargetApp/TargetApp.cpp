@@ -8,7 +8,6 @@
 #include <propkey.h>
 #include <tchar.h>
 #include <ATLComTime.h>
-//#include <ctime>
 
 class MyClass
 {
@@ -23,42 +22,75 @@ public:
     }
 };
 
-//#include <atlbase.h>
-//#include <atlsecurity.h>
-
-int wmain(int argc, WCHAR* argv[])
+void DemoLOGFONTAW()
 {
-	HFONT hf = static_cast<HFONT>( GetStockObject( DEFAULT_GUI_FONT ) );
+	HGDIOBJ hf = GetStockObject( DEFAULT_GUI_FONT );
 
-	LOGFONT lf;
-	GetObject( hf, sizeof( lf ), &lf );
 	LOGFONTA lfa;
-	GetObjectA( hf, sizeof( lfa ), &lfa );
 	LOGFONTW lfw;
-	GetObjectW( hf, sizeof( lfw ), &lfw );
 
-	// Put some specific values in
+	GetObjectA( hf, sizeof( lfa ), &lfa );
+	GetObjectW( hf, sizeof( lfw ), &lfw );
+}
+
+void DemoLOGFONT()
+{
+	LOGFONT lf;
+
+	// If you break here, the LOGFONT object will be uninitialized
+	// (not guaranteed in a non-debug build)
+	GetObject( GetStockObject( DEFAULT_GUI_FONT ), sizeof( lf ), &lf );
+
+	// Here it's show the default values
+
 	lf.lfCharSet = EASTEUROPE_CHARSET;
 	lf.lfItalic = TRUE;
 	lf.lfStrikeOut = TRUE;
 	lf.lfUnderline = TRUE;
 	lf.lfWeight = FW_SEMIBOLD;
 
-	COleDateTime dt{COleDateTime::GetCurrentTime()};
+	// And here you should see the amended characteristics
+}
+
+void DemoTimes2()
+{
+	// Break here and the COleDateTime will be uninitialized
+	COleDateTime dt{ COleDateTime::GetCurrentTime() };
+
+	// Here it will show the current date/time
+
 	// Create one in summer time
 	COleDateTime dtSummer( dt.GetYear(), 6, 16, 1, 2, 3 );
+
 	// Another in winter time
-	COleDateTime dtWinter(dt.GetYear(), 12, 25, 4, 5, 6);
+	COleDateTime dtWinter( dt.GetYear(), 12, 25, 4, 5, 6 );
 
 	CTimeSpan tspan( 1, 2, 3, 4 );
-	tspan.GetDays();
-
 	CString str = dt.Format();
 
+	FILETIME ft;
+	GetSystemTimeAsFileTime( &ft );
+	CTime tim( ft );
+
+}
+
+void DemoPropKey()
+{
+	PROPERTYKEY key;
+
+	// BREAK HERE TO SEE THE INVALID REPRESENTATION OF PROPERTYKEY
+	key = PKEY_ApplicationName;
+
+	// Here you should see the populated key name
+}
+
+void DemoTimes1()
+{
 	FILETIME ft;
 	SYSTEMTIME st;
 
 	// BREAK HERE TO SEE THE INVALID REPRESENTATION OF FILETIME & SYSTEMTIME
+
 	st.wYear = 2016;
 	st.wMonth = 6;
 	st.wDay = 16;
@@ -69,29 +101,31 @@ int wmain(int argc, WCHAR* argv[])
 
 	SystemTimeToFileTime( &st, &ft );
 
-	CTime tim( ft );
-
 	// Now get the local time
 	SYSTEMTIME lst;
 	SystemTimeToTzSpecificLocalTime( nullptr, &st, &lst );
 	FILETIME lft;
 	SystemTimeToFileTime( &lst, &lft );
+}
 
-	PROPERTYKEY key;
+int wmain(int argc, WCHAR* argv[])
+{
+	// Step into the following functions and examine the appropriate variables
+	// to see the visualizers in action.
+	__debugbreak();
 
-	// BREAK HERE TO SEE THE INVALID REPRESENTATION OF PROPERTYKEY
-	key = PKEY_ApplicationName;
+	DemoLOGFONT();
+	DemoLOGFONTAW();
+	DemoTimes1();
+	DemoTimes2();
+	DemoPropKey();
 
-	MyClass myC(ft, key);
+	FILETIME FTZero = {};
 
-    FILETIME FTZero = {};
+	// Check things work when members of a class
+	MyClass myC(FTZero, PKEY_ApplicationName );
 
-#if 0	//Ineffective, no unique struct definition
-	time_t tim;
-	time( &tim );
-#endif
-    __debugbreak(); // program will stop here. Evaluate 'myC', key, st, ft, lst in the debugtip, locals or watch windows.
-    std::cout << "Test complete\n";
+    __debugbreak(); // program will stop here. Evaluate 'myC' in the debugtip, locals or watch windows.
 
     return 0;
 }
