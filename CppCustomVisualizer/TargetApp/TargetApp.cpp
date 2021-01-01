@@ -28,7 +28,21 @@ public:
 
 int wmain(int argc, WCHAR* argv[])
 {
-//	LOGFONT lf;
+	HFONT hf = static_cast<HFONT>( GetStockObject( DEFAULT_GUI_FONT ) );
+
+	LOGFONT lf;
+	GetObject( hf, sizeof( lf ), &lf );
+	LOGFONTA lfa;
+	GetObjectA( hf, sizeof( lfa ), &lfa );
+	LOGFONTW lfw;
+	GetObjectW( hf, sizeof( lfw ), &lfw );
+
+	// Put some specific values in
+	lf.lfCharSet = EASTEUROPE_CHARSET;
+	lf.lfItalic = TRUE;
+	lf.lfStrikeOut = TRUE;
+	lf.lfUnderline = TRUE;
+	lf.lfWeight = FW_SEMIBOLD;
 
 	COleDateTime dt{COleDateTime::GetCurrentTime()};
 	// Create one in summer time

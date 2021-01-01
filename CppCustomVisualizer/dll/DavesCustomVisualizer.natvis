@@ -28,6 +28,12 @@ For information about natvis files see: https://docs.microsoft.com/en-us/visuals
   <Type Name="ATL::CTime">
     <CustomVisualizer VisualizerId="6873613E-3521-4D77-B530-70477A6AEF51"/>
   </Type>
+  <Type Name="tagLOGFONTA">
+    <CustomVisualizer VisualizerId="E586FDC6-B483-4B99-98CC-9B85D28D02F2"/>
+  </Type>
+  <Type Name="tagLOGFONTW">
+    <CustomVisualizer VisualizerId="0EACE4C2-894A-4F8D-B86C-7FA386134733"/>
+  </Type>
 
   <Type Name="ATL::COleDateTime">
     <!--<CustomVisualizer Condition="m_status == DateTimeStatus::valid" VisualizerId="C27383FF-1889-4959-A0E4-99DB41295CB3"/>-->

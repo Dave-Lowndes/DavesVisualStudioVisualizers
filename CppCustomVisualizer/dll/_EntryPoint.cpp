@@ -7,13 +7,13 @@
 #include "_EntryPoint.h"
 #include "FileAndSystemTimeViz.h"
 #include "PropertyKeyViz.h"
-//#include <ctime>
+#include "FontInfoViz.h"
 #include <ATLComTime.h>
 
 #define INITGUID
 #include <initguid.h>
 
-// These GUID values are referenced in the .natvis file where the're associated with the named type
+// These GUID values are referenced in the .natvis file where they're associated with the named type
 // {34A6191C-7D6D-4B36-9C3F-A4D051289DEB}
 DEFINE_GUID( FILETIME_VIZ_ID, 0x34a6191c, 0x7d6d, 0x4b36, 0x9c, 0x3f, 0xa4, 0xd0, 0x51, 0x28, 0x9d, 0xeb );
 
@@ -30,8 +30,13 @@ DEFINE_GUID( CTimeSpan_VIZ_ID, 0xc7b69925, 0x4654, 0x434d, 0xa6, 0x57, 0x63, 0x1
 DEFINE_GUID( CTime_VIZ_ID, 0x6873613e, 0x3521, 0x4d77, 0xb5, 0x30, 0x70, 0x47, 0x7a, 0x6a, 0xef, 0x51 );
 
 // {C27383FF-1889-4959-A0E4-99DB41295CB3}
-DEFINE_GUID( COleDateTime_VIZ_ID,
-    0xc27383ff, 0x1889, 0x4959, 0xa0, 0xe4, 0x99, 0xdb, 0x41, 0x29, 0x5c, 0xb3 );
+DEFINE_GUID( COleDateTime_VIZ_ID, 0xc27383ff, 0x1889, 0x4959, 0xa0, 0xe4, 0x99, 0xdb, 0x41, 0x29, 0x5c, 0xb3 );
+
+// {E586FDC6-B483-4B99-98CC-9B85D28D02F2}
+DEFINE_GUID( LOGFONTA_VIZ_ID, 0xe586fdc6, 0xb483, 0x4b99, 0x98, 0xcc, 0x9b, 0x85, 0xd2, 0x8d, 0x2, 0xf2 );
+
+// {0EACE4C2-894A-4F8D-B86C-7FA386134733}
+DEFINE_GUID( LOGFONTW_VIZ_ID, 0xeace4c2, 0x894a, 0x4f8d, 0xb8, 0x6c, 0x7f, 0xa3, 0x86, 0x13, 0x47, 0x33 );
 
 HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpression(
     _In_ Evaluation::DkmVisualizedExpression* pVisualizedExpression,
@@ -179,6 +184,32 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
             // Note: If the COleDateTime is invalid, this returns appropriate text
             strValue = value.Format();
         }
+    }
+    else if ( vizId == LOGFONTA_VIZ_ID )
+    {
+        LOGFONTA value;
+
+        hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
+        if ( FAILED( hr ) )
+        {
+            // If the bytes of the value cannot be read from the target process, just fall back to the default visualization
+            return E_NOTIMPL;
+        }
+
+        strValue = LfToVizString( value );
+    }
+    else if ( vizId == LOGFONTW_VIZ_ID )
+    {
+        LOGFONTW value;
+
+        hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
+        if ( FAILED( hr ) )
+        {
+            // If the bytes of the value cannot be read from the target process, just fall back to the default visualization
+            return E_NOTIMPL;
+        }
+
+        strValue = LfToVizString( value );
     }
     else
     {

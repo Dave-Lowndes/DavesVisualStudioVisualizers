@@ -37,6 +37,9 @@
     <ClCompile Include="PropertyKeyViz.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FontInfoViz.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="CppCustomVisualizer.def">
@@ -80,6 +83,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PropertyKeyViz.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FontInfoViz.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
