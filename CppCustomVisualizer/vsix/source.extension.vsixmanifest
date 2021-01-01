@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="B9711ED2-638F-4D99-9E69-F9D0DB51C1F9" Version="1.0" Language="en-US" Publisher="David Lowndes" />
+    <Identity Id="B9711ED2-638F-4D99-9E69-F9D0DB51C1F9" Version="2.0" Language="en-US" Publisher="David Lowndes" />
     <DisplayName>Dave's Custom Visualizers</DisplayName>
     <Description xml:space="preserve">Win32 Debug Visualizers</Description>
     <MoreInfo>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer</MoreInfo>
     <ReleaseNotes>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer</ReleaseNotes>
-    <Tags>FILETIME;SYSTEMTIME;PROPERTYKEY;COleDateTime,CTime,CTimeSpan</Tags>
+    <Tags>FILETIME;SYSTEMTIME;PROPERTYKEY;COleDateTime,CTime,CTimeSpan,LOGFONT</Tags>
     <Version>2.0</Version>
   </Metadata>
   <Installation>

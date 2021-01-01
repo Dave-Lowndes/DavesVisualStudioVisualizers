@@ -65,12 +65,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "David Lowndes"
             VALUE "FileDescription", "Dave's Custom Visualizers"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileVersion", "2.0.0.0"
             VALUE "LegalCopyright", "(c) David Lowndes.  All rights reserved."
             VALUE "InternalName", "DavesCustomVisualizer.dll"
             VALUE "OriginalFilename", "DavesCustomVisualizer.dll"
             VALUE "ProductName", "Dave's Custom Visualizers"
-            VALUE "ProductVersion", "1.0.0.1"
+            VALUE "ProductVersion", "2.0.0.0"
             VALUE "OLESelfRegister", ""
         END
     END
