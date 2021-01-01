@@ -1,16 +1,16 @@
 # Dave's Visual Studio Debugger Visualizer
-This is an enhanced version of the CppCustomVisualizer in the [Microsoft Concord Extensibility Sample](https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Cpp-Custom-Visualizer-Sample). It currently supports the following Windows types:
+This is an enhanced version of the CppCustomVisualizer in the [Microsoft Concord Extensibility Sample](https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Cpp-Custom-Visualizer-Sample). It currently supports the following Windows SDK and ATL class types:
 
-#### FILETIME  
-Displays both UTC & local time in the current locale format.  
-
-#### SYSTEMTIME  
-Displays the literal time in the current locale format.  
+#### FILETIME, SYSTEMTIME, COleDateTime, CTime
+Displays the time value interpreted as both UTC and local time, shown in your current locale format.  
 
 #### PROPERTYKEY  
 Displays the key's canonical and display names.    
 
-Variables of these types are normally displayed in the debugger in raw number form, but as you can see in the following example, with this extension they're displayed in more useful forms:
+#### CTimeSpan
+Displays the time value as Days, Hours, Minutes, and Seconds.
+
+Variables of the above types are normally displayed in the debugger in raw number form, but as you can see in the following example, with this extension they're displayed in more useful forms:
 
 ![Demonstration animation](demo.gif)
 
@@ -25,7 +25,7 @@ Natvis documentation can be found on [docs.microsoft.com](https://docs.microsoft
 ### dll folder
 
 #### _EntryPoint.cpp  
-Defined new GUIDs for the 3 type visualizers & calls the appropriate converter when the matching GUID is passed (*from the debugger*).
+Defined new GUIDs for the type visualizers & calls the appropriate converter when the matching GUID is passed (*from the debugger*).
 
 #### FileAndSystemTimeViz.cpp/.h  
 Converter for FILETIME & SYSTEMTIME -> String

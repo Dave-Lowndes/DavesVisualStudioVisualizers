@@ -36,6 +36,9 @@ int wmain(int argc, WCHAR* argv[])
 	// Another in winter time
 	COleDateTime dtWinter(dt.GetYear(), 12, 25, 4, 5, 6);
 
+	CTimeSpan tspan( 1, 2, 3, 4 );
+	tspan.GetDays();
+
 	CString str = dt.Format();
 
 	FILETIME ft;
@@ -51,6 +54,8 @@ int wmain(int argc, WCHAR* argv[])
 	st.wMilliseconds = 0;
 
 	SystemTimeToFileTime( &st, &ft );
+
+	CTime tim( ft );
 
 	// Now get the local time
 	SYSTEMTIME lst;

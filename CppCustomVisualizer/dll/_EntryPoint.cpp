@@ -24,7 +24,10 @@ DEFINE_GUID( SYSTEMTIME_VIZ_ID, 0x1ac4a977, 0x2954, 0x4316, 0x8c, 0xe6, 0xa6, 0x
 DEFINE_GUID( PROPKEY_VIZ_ID, 0x47d01893, 0x3fa1, 0x4326, 0x9e, 0xd2, 0x52, 0x36, 0x24, 0x6c, 0xf2, 0x31 );
 
 // {C7B69925-4654-434D-A657-631AAB40BB82}
-//DEFINE_GUID( TIME_T_VIZ_ID, 0xc7b69925, 0x4654, 0x434d, 0xa6, 0x57, 0x63, 0x1a, 0xab, 0x40, 0xbb, 0x82 );
+DEFINE_GUID( CTimeSpan_VIZ_ID, 0xc7b69925, 0x4654, 0x434d, 0xa6, 0x57, 0x63, 0x1a, 0xab, 0x40, 0xbb, 0x82 );
+
+// {6873613E-3521-4D77-B530-70477A6AEF51}
+DEFINE_GUID( CTime_VIZ_ID, 0x6873613e, 0x3521, 0x4d77, 0xb5, 0x30, 0x70, 0x47, 0x7a, 0x6a, 0xef, 0x51 );
 
 // {C27383FF-1889-4959-A0E4-99DB41295CB3}
 DEFINE_GUID( COleDateTime_VIZ_ID,
@@ -86,17 +89,10 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
         }
 
         // Convert to FILETIME (UTC) to pass to the string conversion that shows both UTC & local
-        FILETIME ft;
-        if ( SystemTimeToFileTime( &value, &ft ) )
-        {
-            strValue = FileTimeToText( ft, pRootVisualizedExpression->InspectionContext()->Radix() );
-        }
+        auto sv = SystemTimeToVisualizerFormattedString( value, pRootVisualizedExpression->InspectionContext()->Radix() );
 
         // An empty returned string indicates an invalid SYSTEMTIME
-        if ( strValue.IsEmpty() )
-        {
-            strValue = _T( "Invalid" );
-        }
+        strValue = sv.has_value() ? *sv : _T( "Invalid" );
     }
     else if ( vizId == PROPKEY_VIZ_ID )
     {
@@ -112,11 +108,10 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
         // Format as a string
         strValue = GetKeyName( value );
     }
-#if 0 //Ineffective, no unique struct definition
-    else if ( vizId == TIME_T_VIZ_ID)
+    else if ( vizId == CTimeSpan_VIZ_ID)
     {
-        // Read the time_t value from the target process
-        time_t value;
+        // Read the value from the target process
+        CTimeSpan value;
         hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
         if ( FAILED( hr ) )
         {
@@ -124,19 +119,40 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
             return E_NOTIMPL;
         }
 
-        // Format as a string
+        strValue = value.Format( _T("%Dd %Hh %Mm %Ss") );
+    }
+    else if ( vizId == CTime_VIZ_ID )
+    {
+        // Read the value from the target process
+        CTime value;
+        hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
+        if ( FAILED( hr ) )
         {
-            tm tmm;
-            gmtime_s( &tmm, &value );
-            char buffer[100];
-            asctime_s( buffer, &tmm );
-            strValue = buffer;
+            // If the bytes of the value cannot be read from the target process, just fall back to the default visualization
+            return E_NOTIMPL;
+        }
+
+        // Convert -> SYSTEMTIME -> FILETIME in order to use the FILETIME string output function
+        SYSTEMTIME st;
+        if ( value.GetAsSystemTime( st ) )
+        {
+            auto ostrVal = SystemTimeToVisualizerFormattedString( st, pRootVisualizedExpression->InspectionContext()->Radix() );
+
+            if ( ostrVal.has_value() )
+            {
+                strValue = *ostrVal;
+            }
+        }
+
+        // An empty returned string indicates an invalid SYSTEMTIME
+        if ( strValue.IsEmpty() )
+        {
+            strValue = _T("Invalid");
         }
     }
-#endif
     else if ( vizId == COleDateTime_VIZ_ID )
     {
-        /*ATL::*/COleDateTime value;
+        COleDateTime value;
 
         hr = pTargetProcess->ReadMemory( pPointerValueHome->Address(), DkmReadMemoryFlags::None, &value, sizeof( value ), nullptr );
         if ( FAILED( hr ) )
@@ -149,11 +165,11 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
         SYSTEMTIME st;
         if ( value.GetAsSystemTime( st ) )
         {
-            // Convert to FILETIME (UTC) to pass to the string conversion that shows both UTC & local
-            FILETIME ft;
-            if ( SystemTimeToFileTime( &st, &ft ) )
+            auto ostrVal = SystemTimeToVisualizerFormattedString( st, pRootVisualizedExpression->InspectionContext()->Radix() );
+
+            if ( ostrVal.has_value() )
             {
-                strValue = FileTimeToText( ft, pRootVisualizedExpression->InspectionContext()->Radix() );
+                strValue = *ostrVal;
             }
         }
 

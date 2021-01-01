@@ -21,12 +21,14 @@ For information about natvis files see: https://docs.microsoft.com/en-us/visuals
   <Type Name="_tagpropertykey">
     <CustomVisualizer VisualizerId="47D01893-3FA1-4326-9ED2-5236246CF231"/>
   </Type>
-<!--
-  Ineffective, no unique struct definition
-  <Type Name="__time64_t">
+
+  <Type Name="ATL::CTimeSpan">
     <CustomVisualizer VisualizerId="C7B69925-4654-434D-A657-631AAB40BB82"/>
   </Type>
--->
+  <Type Name="ATL::CTime">
+    <CustomVisualizer VisualizerId="6873613E-3521-4D77-B530-70477A6AEF51"/>
+  </Type>
+
   <Type Name="ATL::COleDateTime">
     <!--<CustomVisualizer Condition="m_status == DateTimeStatus::valid" VisualizerId="C27383FF-1889-4959-A0E4-99DB41295CB3"/>-->
     <CustomVisualizer VisualizerId="C27383FF-1889-4959-A0E4-99DB41295CB3"/>

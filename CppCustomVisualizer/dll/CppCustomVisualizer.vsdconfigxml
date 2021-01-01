@@ -43,9 +43,10 @@ For more information about this file, see https://github.com/Microsoft/ConcordEx
             <VisualizerId RequiredValue="1AC4A977-2954-4316-8CE6-A6251EEBA144"/>
             <!--PROPERTYKEY-->
             <VisualizerId RequiredValue="47D01893-3FA1-4326-9ED2-5236246CF231"/>
-            <!--time_t Ineffective, no unique struct definition
+            <!--CTimeSpan-->
             <VisualizerId RequiredValue="C7B69925-4654-434D-A657-631AAB40BB82"/>
-	    -->
+            <!--CTime-->
+            <VisualizerId RequiredValue="6873613E-3521-4D77-B530-70477A6AEF51"/>
           </Filter>
           <Interface Name="IDkmCustomVisualizer"/>
         </InterfaceGroup>

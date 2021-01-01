@@ -2,9 +2,11 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 #include "stdafx.h"
+#include <optional>
+using std::optional;
 #include "FileAndSystemTimeViz.h"
 
-CString FormatSystemTime( const SYSTEMTIME& st )
+static CString FormatSystemTime( const SYSTEMTIME& st )
 {
     TCHAR szDate[50];
 
@@ -112,4 +114,17 @@ CString FileTimeToText( const FILETIME& ftUtc, UINT nBase )
         //        sprintf_s( pResult, BufferMax, );
     }
     return text;
+}
+
+optional<CString> SystemTimeToVisualizerFormattedString( const SYSTEMTIME& st, UINT Radix )
+{
+    optional<CString> sRet;
+
+    FILETIME ft;
+    if ( SystemTimeToFileTime( &st, &ft ) )
+    {
+        sRet = FileTimeToText( ft, Radix );
+    }
+
+    return sRet;
 }
