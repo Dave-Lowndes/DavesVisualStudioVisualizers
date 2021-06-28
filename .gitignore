@@ -20,11 +20,14 @@ intermediate
 *.tmp
 *.VC.opendb
 *.VC.db
+*.binlog
 packages/
 .vs/
 Microsoft.VisualStudio.Glass
 /Iris/Programs/*.dll
 /Iris/Programs/*.exe
 /Iris/Programs/*.pdb
+/Iris/ic/Properties/launchSettings.json
+/Iris/xplat-package/Properties/launchSettings.json
 /CppCustomVisualizer/SignVSIX.bat
 /CppCustomVisualizer/dll/CppCustomVisualizer.aps
