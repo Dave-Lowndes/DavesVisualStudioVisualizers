@@ -7,11 +7,16 @@
     <MoreInfo>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer</MoreInfo>
     <ReleaseNotes>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer</ReleaseNotes>
     <Tags>FILETIME;SYSTEMTIME;PROPERTYKEY;COleDateTime;CTime;CTimeSpan;LOGFONT</Tags>
-    <Version>2.0</Version>
+    <Version>2.1</Version>
   </Metadata>
   <Installation>
-    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0, 17.0)" />
-  </Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,17.0)">
+      <ProductArchitecture>x86</ProductArchitecture>
+    </InstallationTarget>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
+      <ProductArchitecture>amd64</ProductArchitecture>
+    </InstallationTarget>
+  </Installation>  
   <Prerequisites>
     <Prerequisite Id="Microsoft.VisualStudio.Debugger" Version="[15.0,)" DisplayName="Visual Studio Debugger" />
   </Prerequisites>
