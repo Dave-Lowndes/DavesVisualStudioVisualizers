@@ -1,8 +1,13 @@
-# Dave's Visual Studio Debugger Visualizer
-This is an enhanced version of the CppCustomVisualizer in the [Microsoft Concord Extensibility Sample](https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Cpp-Custom-Visualizer-Sample).
+# Dave's Visual Studio Debug Visualizers
+Win32/MFC Debug Visualizers for the following structures and classes:
 
+**Times:**  FILETIME, SYSTEMTIME, COleDateTime, CTime, CTimeSpan
+
+**Miscellaneous:** PROPERTYKEY, LOGFONT
+***
+*If you'd like to see other common structures or classes included, don't hesitate to ask by adding a [new idea in the discussion area](https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/discussions/new).*
+***
 Variables of the following types are normally displayed in raw forms by the debugger, but as you can see in the following examples, with this extension they're displayed in more useful formats.
-
 
 #### FILETIME, SYSTEMTIME
 Displays the time value interpreted as both UTC and local time, shown in your current locale format.  
@@ -25,14 +30,15 @@ Displays the commonly used LOGFONT structure members in an easy to interpret for
 
 ![LOGFONT demonstration animation](logfont-demo.gif)
 ***
-### Original project on which this is based
-The original CppCustomVisualizer only handles the FILETIME type, and only shows a local format of it.
-
-More information can be found in the [Wiki for that project](https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Cpp-Custom-Visualizer-Sample).
+### Original Project
+This project is  based on the CppCustomVisualizer in the [Microsoft Concord Extensibility Sample](https://github.com/Microsoft/ConcordExtensibilitySamples/wiki/Cpp-Custom-Visualizer-Sample).
+The original visualizer only handles the FILETIME type, and only shows a local format of it.
 
 Natvis documentation can be found on [docs.microsoft.com](https://docs.microsoft.com/en-us/visualstudio/debugger/create-custom-views-of-native-objects).
 
-## Notes on Changes to the Original example
+Thanks to [Gregg Miskelly](https://github.com/gregg-miskelly) for pointing me in the right direction in getting this project to build for Visual Studio 2022.
+
+## Notes on additions to the original example
 ### dll folder
 
 #### _EntryPoint.cpp  
