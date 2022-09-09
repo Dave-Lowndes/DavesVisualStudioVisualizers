@@ -22,12 +22,8 @@ class ATL_NO_VTABLE CCppCustomVisualizerService :
     public CComCoClass<CCppCustomVisualizerService, &CCppCustomVisualizerServiceContract::ClassId>
 {
 protected:
-    CCppCustomVisualizerService()
-    {
-    }
-    ~CCppCustomVisualizerService()
-    {
-    }
+    CCppCustomVisualizerService() = default;
+    ~CCppCustomVisualizerService() = default;
 
 public:
     DECLARE_NO_REGISTRY();
