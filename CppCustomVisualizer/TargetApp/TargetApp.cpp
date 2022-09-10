@@ -71,7 +71,6 @@ void DemoTimes2()
 	FILETIME ft;
 	GetSystemTimeAsFileTime( &ft );
 	CTime tim( ft );
-
 }
 
 void DemoPropKey()
@@ -106,6 +105,15 @@ void DemoTimes1()
 	SystemTimeToTzSpecificLocalTime( nullptr, &st, &lst );
 	FILETIME lft;
 	SystemTimeToFileTime( &lst, &lft );
+
+	// Demonstrate the partial form of SYSTEMTIME
+	SYSTEMTIME stPartial{};
+	stPartial.wDayOfWeek = 0;	// Sunday
+	stPartial.wHour = 1;
+	stPartial.wMonth = 3;	// March
+	stPartial.wDay = 1;	// First week of the month
+	// At this point the partial SYSTEMTIME is of the form obtained from the XXX API.
+	stPartial = stPartial;
 }
 
 int wmain(int argc, WCHAR* argv[])
@@ -125,7 +133,7 @@ int wmain(int argc, WCHAR* argv[])
 	// Check things work when members of a class
 	MyClass myC(FTZero, PKEY_ApplicationName );
 
-    __debugbreak(); // program will stop here. Evaluate 'myC' in the debugtip, locals or watch windows.
+    __debugbreak(); // program will stop here. Evaluate 'myC' in the debug tip, locals or watch windows.
 
     return 0;
 }
