@@ -106,7 +106,7 @@ CString FileTimeToText( const FILETIME& ftUtc, UINT nBase )
 
 #pragma region ConvertOccurenceSystemTimeForYear
 // Convert the SYSTEMTIME to a FILETIME and back in order to get all members consistent - specifically the day of week value
-static BOOL MakeSystemTimeConsistent( SYSTEMTIME& st )
+static BOOL MakeSystemTimeConsistent( SYSTEMTIME & st )
 {
     BOOL bRV = FALSE;
     FILETIME ft;
@@ -117,6 +117,8 @@ static BOOL MakeSystemTimeConsistent( SYSTEMTIME& st )
             bRV = TRUE;
         }
     }
+    // I don't expect this to be called with some time that would fail
+    _ASSERT( bRV );
     return bRV;
 }
 
@@ -135,7 +137,7 @@ static void OffsetFileTime( FILETIME& ft, UINT64 offsetIn100nsUnits )
 constexpr INT64 OneDay = 24ull * 60 * 60 * 1000 * 1000 * 10;
 constexpr UINT64 ThirtyOneDays = 31ull * OneDay;
 
-static SYSTEMTIME ConvertOccurenceSystemTimeForYear( const SYSTEMTIME & stPartial, const WORD Year )
+static optional<SYSTEMTIME> ConvertOccurenceSystemTimeForYear( const SYSTEMTIME & stPartial, const WORD Year )
 {
     // Preserve these here for clarity of 
     const auto reqdWeekDay = stPartial.wDayOfWeek;
@@ -150,31 +152,34 @@ static SYSTEMTIME ConvertOccurenceSystemTimeForYear( const SYSTEMTIME & stPartia
     if ( WeekNum < 5 )
     {
         // Convert 1'st of month back and forth to get the weekday of the start of the month
-        MakeSystemTimeConsistent( stFirstOfMonth );
-
-        // Now have the start of the month weekday
-        auto somwd = stFirstOfMonth.wDayOfWeek;
-
-        WORD offsetDays;
-        if ( reqdWeekDay < somwd )
+        if ( MakeSystemTimeConsistent( stFirstOfMonth ) )
         {
-            offsetDays = reqdWeekDay - somwd + 7;
+            // Now have the start of the month weekday
+            auto somwd = stFirstOfMonth.wDayOfWeek;
+
+            WORD offsetDays;
+            if ( reqdWeekDay < somwd )
+            {
+                offsetDays = reqdWeekDay - somwd + 7;
+            }
+            else
+            {
+                offsetDays = reqdWeekDay - somwd;
+            }
+
+            // offset by the weeks
+            offsetDays += 7 * (WeekNum - 1);
+
+            // The first day of the month for the desired weekday
+            SYSTEMTIME st{ stFirstOfMonth };
+            st.wDay += offsetDays;
+
+            // Ensure the week day is correct for the return value
+            if ( MakeSystemTimeConsistent( st ) )
+            {
+                return st;
+            }
         }
-        else
-        {
-            offsetDays = reqdWeekDay - somwd;
-        }
-
-        // offset by the weeks
-        offsetDays += 7 * (WeekNum - 1);
-
-        // The first day of the month for the desired weekday
-        SYSTEMTIME st{ stFirstOfMonth };
-        st.wDay += offsetDays;
-
-        // Ensure the week day is correct for the return value
-        MakeSystemTimeConsistent( st );
-        return st;
     }
     else
     {
@@ -194,41 +199,44 @@ static SYSTEMTIME ConvertOccurenceSystemTimeForYear( const SYSTEMTIME & stPartia
                 // We now want the start of this next month
                 st.wDay = 1;
 
-                MakeSystemTimeConsistent( st );
-
-                // Previous day is the last day of the month we want to go back 1 day
-                if ( SystemTimeToFileTime( &st, &ft ) )
+                if ( MakeSystemTimeConsistent( st ) )
                 {
-                    OffsetFileTime( ft, static_cast<UINT64>(-OneDay) );
-
-                    // Back to SYSTEMTIME
-                    if ( FileTimeToSystemTime( &ft, &st ) )
+                    // Previous day is the last day of the month we want to go back 1 day
+                    if ( SystemTimeToFileTime( &st, &ft ) )
                     {
-                        // Now have the day of the week for the end of the month
-                        const auto dowEndOfMonth = st.wDayOfWeek;
+                        OffsetFileTime( ft, static_cast<UINT64>(-OneDay) );
 
-                        WORD offsetDays;
-                        if ( reqdWeekDay <= dowEndOfMonth )
+                        // Back to SYSTEMTIME
+                        if ( FileTimeToSystemTime( &ft, &st ) )
                         {
-                            offsetDays = dowEndOfMonth - reqdWeekDay;
-                        }
-                        else
-                        {
-                            offsetDays = dowEndOfMonth - reqdWeekDay + 7;
-                        }
+                            // Now have the day of the week for the end of the month
+                            const auto dowEndOfMonth = st.wDayOfWeek;
 
-                        st.wDay -= offsetDays;
+                            WORD offsetDays;
+                            if ( reqdWeekDay <= dowEndOfMonth )
+                            {
+                                offsetDays = dowEndOfMonth - reqdWeekDay;
+                            }
+                            else
+                            {
+                                offsetDays = dowEndOfMonth - reqdWeekDay + 7;
+                            }
 
-                        // Ensure the week day is correct for the return value
-                        MakeSystemTimeConsistent( st );
-                        return st;
+                            st.wDay -= offsetDays;
+
+                            // Ensure the week day is correct for the return value
+                            if ( MakeSystemTimeConsistent( st ) )
+                            {
+                                return st;
+                            }
+                        }
                     }
                 }
             }
         }
     }
     // Shouldn't get here
-    _ASSERT( "Find what's wrong with the assumptions!" );
+    _ASSERT( FALSE );
     return {};
 }
 #pragma endregion ConvertOccurenceSystemTimeForYear
@@ -239,7 +247,8 @@ optional<CString> SystemTimeToVisualizerFormattedString( const SYSTEMTIME & st, 
 
     // If the SYSTEMTIME has year 0, it's probably of the form described here for the StandardDate and DaylightDate forms:
     // https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information
-    if ( (st.wYear == 0) && (st.wDay != 0) )
+    // The other conditions preclude the following code from showing something daft
+	if ( (st.wYear == 0) && (st.wDay != 0) && (st.wMonth >= 1) && (st.wMonth <= 12) )
     {
         // Show this like: "Wednesday, [Last] week [1] of March" along with a computed actual date of when that is for the current year.
         // See https://docs.microsoft.com/en-us/windows/win32/intl/locale-smonthname-constants for information on the max lengths of these
@@ -263,18 +272,21 @@ optional<CString> SystemTimeToVisualizerFormattedString( const SYSTEMTIME & st, 
             str.Format( _T( "%s, Last week of %s" ), szDayName, szMonthName );
         }
 
-        // Convert to a prospective real date time and show that in addition
+        // Convert to a prospective real date time and if we can, show that in addition
         SYSTEMTIME stNow;
         GetSystemTime( &stNow );
         const auto stExample = ConvertOccurenceSystemTimeForYear( st, stNow.wYear );
 
-        auto fmtd = SystemTimeToVisualizerFormattedString( stExample, Radix );
-
-        if ( fmtd.has_value() )
+        if ( stExample.has_value() )
         {
-            // Append the real example
-            str += _T("; e.g. ");
-            str += *fmtd;
+            auto fmtd = SystemTimeToVisualizerFormattedString( *stExample, Radix );
+
+            if ( fmtd.has_value() )
+            {
+                // Append the real example
+                str += _T( "; e.g. " );
+                str += *fmtd;
+            }
         }
 
         sRet = str;

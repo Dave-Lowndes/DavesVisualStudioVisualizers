@@ -10,7 +10,7 @@ Win32/MFC Debug Visualizers for the following structures and classes:
 Variables of the following types are normally displayed in raw forms by the debugger, but as you can see in the following examples, with this extension they're displayed in more useful formats.
 
 #### FILETIME, SYSTEMTIME
-Displays the time value interpreted as both UTC and local time, shown in your current locale format.  
+Displays the time value interpreted as both UTC and local time, shown in your current locale format. Also displays the SYSTEMTIME form used in <a href="https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/ns-timezoneapi-time_zone_information" target="_blank">TIME_ZONE_INFORMATION & DYNAMIC_TIME_ZONE_INFORMATION</a> from the <a href="https://docs.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation" target="_blank">GetTimeZoneInformation(ForYear) & GetDynamicTimeZoneInformation</a> APIs.
 
 ![FILETIME & SYSTEMTIME demonstration animation](ft-st-demo.gif)
 ***

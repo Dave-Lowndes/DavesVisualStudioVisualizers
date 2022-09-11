@@ -108,11 +108,12 @@ void DemoTimes1()
 
 	// Demonstrate the partial form of SYSTEMTIME
 	SYSTEMTIME stPartial{};
-	stPartial.wDayOfWeek = 0;	// Sunday
 	stPartial.wHour = 1;
-	stPartial.wMonth = 3;	// March
-	stPartial.wDay = 1;	// First week of the month
-	// At this point the partial SYSTEMTIME is of the form obtained from the XXX API.
+	stPartial.wDayOfWeek = 0;	// Sunday
+	stPartial.wDay = 5;			// Last week of the month
+	stPartial.wMonth = 3;		// March
+
+	// At this point the partial SYSTEMTIME is of the form obtained from the GetTimeZoneInformationForYear API.
 	stPartial = stPartial;
 }
 
