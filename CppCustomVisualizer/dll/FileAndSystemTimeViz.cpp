@@ -104,7 +104,7 @@ CString FileTimeToText( const FILETIME& ftUtc, UINT nBase )
     return text;
 }
 
-#pragma region ConvertOccurenceSystemTimeForYear
+#pragma region TzInfoSystemTimeToSystemTimeForYear
 // Convert the SYSTEMTIME to a FILETIME and back in order to get all members consistent - specifically the day of week value
 static BOOL MakeSystemTimeConsistent( SYSTEMTIME & st )
 {
@@ -137,7 +137,7 @@ static void OffsetFileTime( FILETIME& ft, UINT64 offsetIn100nsUnits )
 constexpr INT64 OneDay = 24ull * 60 * 60 * 1000 * 1000 * 10;
 constexpr UINT64 ThirtyOneDays = 31ull * OneDay;
 
-static optional<SYSTEMTIME> ConvertOccurenceSystemTimeForYear( const SYSTEMTIME & stPartial, const WORD Year )
+static optional<SYSTEMTIME> TzInfoSystemTimeToSystemTimeForYear( const SYSTEMTIME & stPartial, const WORD Year )
 {
     // Preserve these here for clarity of 
     const auto reqdWeekDay = stPartial.wDayOfWeek;
@@ -239,7 +239,7 @@ static optional<SYSTEMTIME> ConvertOccurenceSystemTimeForYear( const SYSTEMTIME 
     _ASSERT( FALSE );
     return {};
 }
-#pragma endregion ConvertOccurenceSystemTimeForYear
+#pragma endregion TzInfoSystemTimeToSystemTimeForYear
 
 optional<CString> SystemTimeToVisualizerFormattedString( const SYSTEMTIME & st, UINT Radix )
 {
@@ -275,7 +275,7 @@ optional<CString> SystemTimeToVisualizerFormattedString( const SYSTEMTIME & st, 
         // Convert to a prospective real date time and if we can, show that in addition
         SYSTEMTIME stNow;
         GetSystemTime( &stNow );
-        const auto stExample = ConvertOccurenceSystemTimeForYear( st, stNow.wYear );
+        const auto stExample = TzInfoSystemTimeToSystemTimeForYear( st, stNow.wYear );
 
         if ( stExample.has_value() )
         {
