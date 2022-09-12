@@ -191,6 +191,7 @@
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TzInfoSystemTimeConverter.cpp" />
     <ClCompile Include="_EntryPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -214,6 +215,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="$(IntDir)CppCustomVisualizer.Contract.h" />
+    <ClInclude Include="TzInfoSystemTimeConverter.h" />
     <ClInclude Include="_EntryPoint.h" />
   </ItemGroup>
   <ItemGroup>
