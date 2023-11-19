@@ -79,7 +79,7 @@ CString FileTimeToText( const FILETIME& ftUtc, UINT nBase )
         _ui64toa_s( ftUtc.dwHighDateTime, szHigh, _countof( szHigh ), nBase );
         _ui64toa_s( ftUtc.dwLowDateTime, szLow, _countof( szLow ), nBase );
 
-        char* Prefix;
+        const char* Prefix;
         switch ( nBase )
         {
         case 2:

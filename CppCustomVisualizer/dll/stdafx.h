@@ -23,7 +23,10 @@
 #include <atlcom.h>
 #include <atlctl.h>
 
+#pragma warning(push)
+#pragma warning( disable: 4471)
 #include <vsdebugeng.h>
+#pragma warning(pop)
 #include <vsdebugeng.templates.h>
 
 using namespace ATL;

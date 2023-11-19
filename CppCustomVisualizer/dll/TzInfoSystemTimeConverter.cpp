@@ -39,7 +39,7 @@ constexpr UINT64 ThirtyOneDays = 31ull * OneDay;
 
 optional<SYSTEMTIME> TzInfoSystemTimeToSystemTimeForYear( const SYSTEMTIME& stPartial, const WORD Year )
 {
-    // Preserve these here for clarity of 
+    // Copy these here for reuse and clarity of the code
     const auto reqdWeekDay = stPartial.wDayOfWeek;
     const auto WeekNum = stPartial.wDay;
 
@@ -99,7 +99,7 @@ optional<SYSTEMTIME> TzInfoSystemTimeToSystemTimeForYear( const SYSTEMTIME& stPa
                 // We now want the start of this next month
                 st.wDay = 1;
 
-                if ( MakeSystemTimeConsistent( st ) )
+//Pointless                if ( MakeSystemTimeConsistent( st ) )
                 {
                     // Previous day is the last day of the month we want to go back 1 day
                     if ( SystemTimeToFileTime( &st, &ft ) )
