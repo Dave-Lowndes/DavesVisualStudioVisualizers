@@ -5,33 +5,28 @@
 
 using std::optional;
 
-// Convert the SYSTEMTIME to a FILETIME and back in order to get all members consistent - specifically the day of week value
-static BOOL MakeSystemTimeConsistent( SYSTEMTIME& st )
+/// <summary>
+/// Convert the SYSTEMTIME to a FILETIME and back in order to get all members consistent - specifically the day of week value
+/// </summary>
+/// <param name="st">The SYSTEMTIME value to make "consistent" (fully populated)</param>
+/// <returns>true if all OK</returns>
+static bool MakeSystemTimeConsistent( SYSTEMTIME& st )
 {
-    BOOL bRV = FALSE;
     FILETIME ft;
-    if ( SystemTimeToFileTime( &st, &ft ) )
-    {
-        if ( FileTimeToSystemTime( &ft, &st ) )
-        {
-            bRV = TRUE;
-        }
-    }
+    const bool bRV = SystemTimeToFileTime( &st, &ft ) && FileTimeToSystemTime( &ft, &st );
     // I don't expect this to be called with some time that would fail
     _ASSERT( bRV );
     return bRV;
 }
 
-static void OffsetFileTime( FILETIME& ft, UINT64 offsetIn100nsUnits )
+constexpr static void OffsetFileTime( FILETIME& ft, UINT64 offsetIn100nsUnits )
 {
-    ULARGE_INTEGER ulft;
-    ulft.LowPart = ft.dwLowDateTime;
-    ulft.HighPart = ft.dwHighDateTime;
+    ULARGE_INTEGER FileTimeAsInteger{ .LowPart = ft.dwLowDateTime, .HighPart = ft.dwHighDateTime };
 
-    ulft.QuadPart += offsetIn100nsUnits;
+    FileTimeAsInteger.QuadPart += offsetIn100nsUnits;
 
-    ft.dwLowDateTime = ulft.LowPart;
-    ft.dwHighDateTime = ulft.HighPart;
+    ft.dwLowDateTime = FileTimeAsInteger.LowPart;
+    ft.dwHighDateTime = FileTimeAsInteger.HighPart;
 }
 
 constexpr INT64 OneDay = 24ull * 60 * 60 * 1000 * 1000 * 10;
@@ -55,17 +50,11 @@ optional<SYSTEMTIME> TzInfoSystemTimeToSystemTimeForYear( const SYSTEMTIME& stPa
         if ( MakeSystemTimeConsistent( stFirstOfMonth ) )
         {
             // Now have the start of the month weekday
-            auto somwd = stFirstOfMonth.wDayOfWeek;
+            auto StartOfMonthWeekday = stFirstOfMonth.wDayOfWeek;
 
-            WORD offsetDays;
-            if ( reqdWeekDay < somwd )
-            {
-                offsetDays = reqdWeekDay - somwd + 7;
-            }
-            else
-            {
-                offsetDays = reqdWeekDay - somwd;
-            }
+            WORD offsetDays = reqdWeekDay < StartOfMonthWeekday ?
+                                reqdWeekDay - StartOfMonthWeekday + 7 :
+                                reqdWeekDay - StartOfMonthWeekday;
 
             // offset by the weeks
             offsetDays += 7 * (WeekNum - 1);
@@ -99,39 +88,30 @@ optional<SYSTEMTIME> TzInfoSystemTimeToSystemTimeForYear( const SYSTEMTIME& stPa
                 // We now want the start of this next month
                 st.wDay = 1;
 
-//Pointless                if ( MakeSystemTimeConsistent( st ) )
-                {
-                    // Previous day is the last day of the month we want to go back 1 day
-                    if ( SystemTimeToFileTime( &st, &ft ) )
-                    {
-                        OffsetFileTime( ft, static_cast<UINT64>(-OneDay) );
+				// Previous day is the last day of the month we want to go back 1 day
+				if ( SystemTimeToFileTime( &st, &ft ) )
+				{
+					OffsetFileTime( ft, static_cast<UINT64>(-OneDay) );
 
-                        // Back to SYSTEMTIME
-                        if ( FileTimeToSystemTime( &ft, &st ) )
-                        {
-                            // Now have the day of the week for the end of the month
-                            const auto dowEndOfMonth = st.wDayOfWeek;
+					// Back to SYSTEMTIME
+					if ( FileTimeToSystemTime( &ft, &st ) )
+					{
+						// Now have the day of the week for the end of the month
+						const auto dowEndOfMonth = st.wDayOfWeek;
 
-                            WORD offsetDays;
-                            if ( reqdWeekDay <= dowEndOfMonth )
-                            {
-                                offsetDays = dowEndOfMonth - reqdWeekDay;
-                            }
-                            else
-                            {
-                                offsetDays = dowEndOfMonth - reqdWeekDay + 7;
-                            }
+						const WORD offsetDays = reqdWeekDay <= dowEndOfMonth ?
+							                        dowEndOfMonth - reqdWeekDay :
+							                        dowEndOfMonth - reqdWeekDay + 7;
 
-                            st.wDay -= offsetDays;
+						st.wDay -= offsetDays;
 
-                            // Ensure the week day is correct for the return value
-                            if ( MakeSystemTimeConsistent( st ) )
-                            {
-                                return st;
-                            }
-                        }
-                    }
-                }
+						// Ensure the week day is correct for the return value
+						if ( MakeSystemTimeConsistent( st ) )
+						{
+							return st;
+						}
+					}
+				}
             }
         }
     }

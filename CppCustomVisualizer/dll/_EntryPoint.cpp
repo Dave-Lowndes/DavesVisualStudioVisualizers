@@ -97,7 +97,7 @@ HRESULT STDMETHODCALLTYPE CCppCustomVisualizerService::EvaluateVisualizedExpress
         auto sv = SystemTimeToVisualizerFormattedString( value, pRootVisualizedExpression->InspectionContext()->Radix() );
 
         // An empty returned string indicates an invalid SYSTEMTIME
-        strValue = sv.has_value() ? *sv : _T( "Invalid" );
+        strValue = sv.has_value() ? *sv : CString(_T( "Invalid" ));
     }
     else if ( vizId == PROPKEY_VIZ_ID )
     {

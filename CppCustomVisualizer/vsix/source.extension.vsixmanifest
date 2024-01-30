@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="B9711ED2-638F-4D99-9E69-F9D0DB51C1F9" Version="2.2" Language="en-US" Publisher="David Lowndes" />
-    <DisplayName>Dave's Debug Visualizers</DisplayName>
+    <Identity Id="B9711ED2-638F-4D99-9E69-F9D0DB51C1F9" Version="2.3" Language="en-US" Publisher="David Lowndes" />
+    <DisplayName>Dave's Win32 &amp; C++ Debug Visualizers</DisplayName>
     <Description xml:space="preserve">Win32/MFC Debug Visualizers for: FILETIME, SYSTEMTIME, COleDateTime, CTime, CTimeSpan, PROPERTYKEY, LOGFONT</Description>
     <MoreInfo>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer#readme</MoreInfo>
-    <!--<ReleaseNotes>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer#readme</ReleaseNotes>-->
+    <ReleaseNotes>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer#readme</ReleaseNotes>
     <Tags>FILETIME;SYSTEMTIME;PROPERTYKEY;COleDateTime;CTime;CTimeSpan;LOGFONT</Tags>
-    <Version>2.2</Version>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,17.0)">

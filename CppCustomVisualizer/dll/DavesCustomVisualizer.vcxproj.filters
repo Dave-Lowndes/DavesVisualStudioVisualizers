@@ -48,7 +48,6 @@
     <None Include="CppCustomVisualizer.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="packages.config" />
     <None Include="packages.version.props" />
     <None Include="CppCustomVisualizer.vsdconfigxml">
       <Filter>Source Files</Filter>
@@ -56,6 +55,7 @@
     <None Include="DavesCustomVisualizer.natvis">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllmain.h">
