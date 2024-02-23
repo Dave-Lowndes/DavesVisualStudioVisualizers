@@ -1,5 +1,5 @@
 # Dave's Visual Studio Debug Visualizers
-Win32/MFC Debug Visualizers for the following structures and classes:
+Win32, ATL, & MFC Debug Visualizers for the following structures and classes:
 
 **Times:**  FILETIME, SYSTEMTIME, COleDateTime, CTime, CTimeSpan
 
