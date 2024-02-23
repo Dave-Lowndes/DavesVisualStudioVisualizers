@@ -20,5 +20,8 @@ because we need to include both the x86 and x64 implementations.
       <VSIXSubPath>x64</VSIXSubPath>
     </VSIXSourceItem>
     <VSIXSourceItem Include="$(DllSrcDir)DavesCustomVisualizer.natvis" />
+    <VSIXSourceItem Include="Resources\MagOnCode90.png">
+      <VSIXSubPath>Resources</VSIXSubPath>
+    </VSIXSourceItem>
   </ItemGroup>
 </Project>
