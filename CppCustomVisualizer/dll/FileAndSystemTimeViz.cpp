@@ -12,21 +12,28 @@ static CString FormatSystemTime( const SYSTEMTIME& st )
     TCHAR szDate[50];
 
     // Use long date format to allow the day name to show if that's in that format. Short date formats don't include the day.
-    size_t NumCharsD = GetDateFormat( GetThreadLocale(), DATE_LONGDATE, &st, NULL, szDate, _countof( szDate ) );
+    const size_t NumCharsD = GetDateFormat( GetThreadLocale(), DATE_LONGDATE, &st, NULL, szDate, _countof( szDate ) );
+
+    if ( NumCharsD == 0 )
+	{
+		// Normally GetLastError is ERROR_INVALID_PARAMETER indicating that the SYSTEMTIME invalid.
+
+        // Date is invalid, so clear the buffer
+        szDate[0] = _T('\0');
+	}
 
     TCHAR szTime[50];
 
-    auto NumCharsT = GetTimeFormat( GetThreadLocale(), TIME_FORCE24HOURFORMAT, &st, NULL, szTime, _countof( szTime ) );
+    const auto NumCharsT = GetTimeFormat( GetThreadLocale(), TIME_FORCE24HOURFORMAT, &st, NULL, szTime, _countof( szTime ) );
+
+    if ( NumCharsT == 0 )
+    {
+        // Failed to get the time, so clear the buffer
+        szTime[0] = _T('\0');
+    }
 
     CString str;
-
-    // If one of these isn't there, something's wrong, return an empty string
-    if ( (NumCharsD != 0) || (NumCharsT != 0) )
-    {
-        str = szDate;
-        str += _T( ' ' );
-        str += szTime;
-    }
+    str.Format( _T( "%s %s" ), szDate, szTime );
 
     return str;
 }
@@ -35,18 +42,23 @@ CString FileTimeToText( const FILETIME& ftUtc, UINT nBase )
 {
     CString text;
 
+    bool bValidFileTime{ false };
+
     // convert to SystemTime
     SYSTEMTIME SysTime;
 
     if ( FileTimeToSystemTime( &ftUtc, &SysTime ) )
     {
-        CString strUtc = FormatSystemTime( SysTime );
+        const CString strUtc = FormatSystemTime( SysTime );
 
         SYSTEMTIME lst;
 
+        // Even though FileTimeToSystemTime succeeds, and FormatSystemTime can
+        // return something, SystemTimeToTzSpecificLocalTime can fail if the
+        // time is invalid. So check the return value.
         if ( SystemTimeToTzSpecificLocalTime( NULL, &SysTime, &lst ) )
         {
-            CString strLoc = FormatSystemTime( lst );
+            const CString strLoc = FormatSystemTime( lst );
 
             // Determine if there's a difference between local & utc so that I can display the most appropriate zone name
             LONGLONG diffInMins;
@@ -65,13 +77,12 @@ CString FileTimeToText( const FILETIME& ftUtc, UINT nBase )
             LPCWSTR ZoneName = diffInMins != 0 ? tzi.DaylightName : tzi.StandardName;
 
 			text.Format( _T( "[utc] %s [%ls] %s" ), static_cast<LPCTSTR>(strUtc), ZoneName, static_cast<LPCTSTR>(strLoc) );
-        }
-        else
-        {
-            text.Format( _T( "utc: %s ???" ), static_cast<LPCTSTR>(strUtc) );
+
+            bValidFileTime = true;
         }
     }
-    else
+
+    if ( !bValidFileTime )
     {
         // Prior to VS2017 RC2, VS only ever passed 10 for nBase, newer versions should support base values of 2, 8, 10, or 16
         char szHigh[33];	// 32 chars max for base 2 from a DWORD value
@@ -100,7 +111,6 @@ CString FileTimeToText( const FILETIME& ftUtc, UINT nBase )
         }
 
         text.Format( _T( "Invalid [%hs%hs:%hs%hs]" ), Prefix, szHigh, Prefix, szLow );
-        //        sprintf_s( pResult, BufferMax, );
     }
     return text;
 }
