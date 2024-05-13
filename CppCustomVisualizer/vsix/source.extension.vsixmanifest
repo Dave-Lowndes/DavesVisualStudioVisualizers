@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="B9711ED2-638F-4D99-9E69-F9D0DB51C1F9" Version="2.3.1" Language="en-US" Publisher="David Lowndes" />
+    <Identity Id="B9711ED2-638F-4D99-9E69-F9D0DB51C1F9" Version="2.3.2" Language="en-US" Publisher="David Lowndes" />
     <DisplayName>Dave's Win32, ATL, &amp; MFC Debug Visualizers</DisplayName>
     <Description xml:space="preserve">Win32, ATL, &amp; MFC Debug Visualizers for: FILETIME, SYSTEMTIME, COleDateTime, CTime, CTimeSpan, PROPERTYKEY, LOGFONT</Description>
     <MoreInfo>https://github.com/Dave-Lowndes/DavesVisualStudioVisualizers/tree/master/CppCustomVisualizer#readme</MoreInfo>
